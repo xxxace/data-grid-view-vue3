@@ -1,6 +1,4 @@
-import {
-  Tabulator
-} from 'tabulator-tables'
+import { Tabulator } from 'tabulator-tables'
 export function addRangeHack(table: Tabulator) {
   const rangeLayoutCover = function () {
     var _vDomTop = this.table.rowManager.renderer.vDomTop,
@@ -21,7 +19,6 @@ export function addRangeHack(table: Tabulator) {
       bottomRightCellEl,
       topLeftRowEl,
       bottomRightRowEl
-
 
     if (forzenLeft > 0 && forzenLeftColumns[0].isRowHeader === true) {
       forzenLeft -= 1
@@ -47,7 +44,7 @@ export function addRangeHack(table: Tabulator) {
       _vDomRight = Infinity
     }
 
-    if (this.overlaps(_vDomLeft, _vDomTop, _vDomRight, _vDomBottom)) {
+    if (this.overlaps(_vDomLeft, _vDomTop, _vDomRight + forzenLeft + frozenRight, _vDomBottom)) {
       top = Math.max(this.top, _vDomTop)
       bottom = Math.min(this.bottom, _vDomBottom)
       left = Math.max(this.left, _vDomLeft)
@@ -101,19 +98,19 @@ export function addRangeHack(table: Tabulator) {
   }
 
   const _updateMinMax = function _updateMinMax() {
-    this.top = Math.min(this.start.row, this.end.row);
-    this.bottom = Math.max(this.start.row, this.end.row);
+    this.top = Math.min(this.start.row, this.end.row)
+    this.bottom = Math.max(this.start.row, this.end.row)
     console.log('_updateMinMax', this.start.col, this.end.col)
-    this.left = Math.min(this.start.col, this.end.col);
+    this.left = Math.min(this.start.col, this.end.col)
     console.log('_updateMinMax', this.left)
-    this.right = Math.max(this.start.col, this.end.col);
+    this.right = Math.max(this.start.col, this.end.col)
 
     if (this.initialized) {
-      this.dispatchExternal("rangeChanged", this.getComponent());
+      this.dispatchExternal('rangeChanged', this.getComponent())
     } else {
       if (this.initializing.start && this.initializing.end) {
-        this.initialized = true;
-        this.dispatchExternal("rangeAdded", this.getComponent());
+        this.initialized = true
+        this.dispatchExternal('rangeAdded', this.getComponent())
       }
     }
   }
@@ -121,11 +118,11 @@ export function addRangeHack(table: Tabulator) {
   const overlaps = function (left, top, right, bottom) {
     console.log('overlaps1', left, top, right, bottom)
     console.log('overlaps2', this.left, this.top, this.right, this.bottom)
-    if ((this.left > right || left > this.right) || (this.top > bottom || top > this.bottom)) {
-      return false;
+    if (this.left > right || left > this.right || this.top > bottom || top > this.bottom) {
+      return false
     }
 
-    return true;
+    return true
   }
 
   const addRangeOrigin = table.modules.selectRange.addRange
@@ -140,35 +137,73 @@ export function addRangeHack(table: Tabulator) {
   }
 
   const layoutRanges = function () {
-    var activeCell, activeCellEl, activeRowEl;
+    var activeCell, activeCellEl, activeRowEl
 
     if (!this.table.initialized) {
-      return;
+      return
     }
 
-    activeCell = this.getActiveCell();
+    activeCell = this.getActiveCell()
 
     if (!activeCell) {
-      return;
+      return
     }
 
-    activeCellEl = activeCell.getElement();
-    activeRowEl = activeCell.row.getElement();
+    activeCellEl = activeCell.getElement()
+    activeRowEl = activeCell.row.getElement()
 
     if (this.table.rtl) {
-      this.activeRangeCellElement.style.right = activeRowEl.offsetWidth - activeCellEl.offsetLeft - activeCellEl.offsetWidth + "px";
+      this.activeRangeCellElement.style.right =
+        activeRowEl.offsetWidth - activeCellEl.offsetLeft - activeCellEl.offsetWidth + 'px'
     } else {
-      this.activeRangeCellElement.style.left = activeRowEl.offsetLeft + activeCellEl.offsetLeft + "px";
+      this.activeRangeCellElement.style.left =
+        activeRowEl.offsetLeft + activeCellEl.offsetLeft + 'px'
     }
 
-    this.activeRangeCellElement.style.top = activeRowEl.offsetTop + "px";
-    this.activeRangeCellElement.style.width = activeCellEl.offsetWidth + "px";
-    this.activeRangeCellElement.style.height = activeRowEl.offsetHeight + "px";
+    this.activeRangeCellElement.style.top = activeRowEl.offsetTop + 'px'
+    this.activeRangeCellElement.style.width = activeCellEl.offsetWidth + 'px'
+    this.activeRangeCellElement.style.height = activeRowEl.offsetHeight + 'px'
 
     console.log('layoutRanges')
-    this.ranges.forEach((range) => range.layout());
+    this.ranges.forEach((range) => range.layout())
 
-    this.overlay.style.visibility = "visible";
+    this.overlay.style.visibility = 'visible'
+  }
+
+  const initializeRow = function (row) {
+    if (row.type !== 'group') {
+      row.modules.vdomHoz = {
+        leftCol: this.leftCol,
+        rightCol: this.rightCol,
+      }
+
+      if (this.table.modules.frozenColumns) {
+        this.table.modules.frozenColumns.leftColumns.forEach((column) => {
+          this.appendCell(row, column)
+        })
+      }
+
+      for (let i = this.leftCol; i <= this.rightCol; i++) {
+        this.appendCell(row, this.columns[i])
+      }
+
+      if (this.table.modules.frozenColumns) {
+        for (let i = this.table.modules.frozenColumns.rightColumns.length - 1; i >= 0; i--) {
+          var column = this.table.modules.frozenColumns.rightColumns[i]
+          this.appendCell(row, column)
+        }
+      }
+    }
+  }
+
+  if (table.columnManager) {
+    const initializeRendererOrigin = table.columnManager.initializeRenderer
+
+    const initializeRenderer = function () {
+      initializeRendererOrigin.call(this)
+      this.renderer.initializeRow = initializeRow
+    }
+    table.columnManager.initializeRenderer = initializeRenderer
   }
 
   table.modules.selectRange.layoutRanges = layoutRanges

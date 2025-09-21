@@ -15,24 +15,19 @@
 
 <style scoped lang="scss">
 .scroll-container {
-  width: 600px;
-  height: 28px;
+  width: 800px;
+  height: 68px;
   position: relative;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
-  white-space: nowrap;
-
-  // 隐藏滚动条但保留功能
-  &::-webkit-scrollbar {
-    height: 0;
-  }
+  overflow: scroll;
 }
 
 .scroll-wrapper {
   height: 100%;
   // display: flex;
   position: relative;
-
+  white-space: nowrap;
 }
 
 .scroll-item {
@@ -53,6 +48,7 @@
 .sticky-item-1 {
   position: sticky;
   right: 200px; // 第三个元素的宽度 + 第二个元素的宽度
+  left: 0;
   background-color: #e3f2fd;
   z-index: 1;
 }
@@ -60,12 +56,14 @@
 .sticky-item-2 {
   position: sticky;
   right: 100px; // 第三个元素的宽度
+  left: 0;
   background-color: #e8f5e9;
   z-index: 2;
 }
 
 .sticky-item-3 {
   position: sticky;
+  left: 0;
   right: 0;
   background-color: #fff3e0;
   z-index: 3;

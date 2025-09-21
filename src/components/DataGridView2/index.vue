@@ -89,7 +89,7 @@ const render = () => {
 
 
 
-  // addRangeHack(tableRef.value)
+  addRangeHack(tableRef.value)
 }
 
 watch(

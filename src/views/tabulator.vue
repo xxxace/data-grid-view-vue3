@@ -14,7 +14,8 @@ const columnMaker = (count: number) => {
       title: `col${i}`,
       field: `col${i}`,
       width: 100,
-      frozen: i < 3 || i > count - 7
+      // frozen: i < 3,
+      frozen: i < 3 || i > count - 5
     })
   }
 
@@ -35,7 +36,7 @@ const dataMaker = (cols: DataGridViewColumn[], length: number) => {
   return data
 }
 
-const columns: DataGridViewColumn[] = columnMaker(20)
+const columns: DataGridViewColumn[] = columnMaker(30)
 
 const tableData = dataMaker(columns, 10000)
 </script>
