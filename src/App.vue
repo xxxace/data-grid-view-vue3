@@ -1,14 +1,14 @@
 <template>
   <div id="app">
-    <!--    <EVirTable />-->
-    <Tabulator />
-    <Stickright />
+    <EVirTable />
+    <!-- <Tabulator /> -->
+    <!--    <Stickright />-->
   </div>
 </template>
 <script setup lang="ts">
 import EVirTable from './views/eVirtTable.vue'
 import Tabulator from './views/tabulator.vue'
-import Stickright from './views/stickright.vue';
+import Stickright from './views/stickright.vue'
 </script>
 <style>
 body {

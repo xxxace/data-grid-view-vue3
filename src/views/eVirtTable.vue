@@ -25,7 +25,7 @@ let columns = ref<Column[]>([
     title: '#',
     operation: true,
     align: 'center',
-    fixed: 'left'
+    fixed: 'left',
   },
   {
     title: 'name',
@@ -155,7 +155,7 @@ const users = faker.helpers.multiple(
   },
 )
 const config: ConfigType = {
-  WIDTH: 20000,
+  // WIDTH: 20000,
   HEIGHT: 600,
   BEFORE_VALUE_CHANGE_METHOD: (changeList) => {
     // 数字类型需要特殊处理，粘贴的内容可能不是数字或字符串的数字
@@ -219,13 +219,18 @@ onMounted(() => {
 })
 </script>
 <template>
-  <div style="width: 100%; height: 600px;overflow: hidden;">
+  <div style="width: 100%; height: 600px; overflow: hidden">
     <!-- <div style="margin-bottom: 8px">
       {{ currentRow }}
     </div> -->
-    <EVirtTableVue @ready="ready" :columns="columns" :data="users" :config="config" @change="change"
-                   @current-row-change="handleCurrentRowChange">
-
+    <EVirtTableVue
+      @ready="ready"
+      :columns="columns"
+      :data="users"
+      :config="config"
+      @change="change"
+      @current-row-change="handleCurrentRowChange"
+    >
     </EVirtTableVue>
   </div>
 </template>
